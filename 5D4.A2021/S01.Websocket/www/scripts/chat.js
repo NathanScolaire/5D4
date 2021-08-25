@@ -7,21 +7,23 @@ const users = [];
 $(document).ready(() => {
 
     $("#btnSend").click(() => {
+        sendMessage()
     });
 
     $("#txtMessage").keypress(e => {
-       
+        if(13 == e.keyCode)
+            sendMessage()
     });
 
     $("#btnUpdateUsername").click(() => {
-        // test
+        const newUsername = $("#txtUsername").val();
+        socket.emit(IOEVENTS.UPDATE_USERNAME, newUsername);
     })
 
 });
 
-//TODO: Réceptions des évenement test
+//TODO: Réceptions des évenement
 socket.on(IOEVENTS.USER_ONLINE, users => {
-    console.log(users);
     $(".users").empty();
     users.forEach(u => {
         const userLi = createUserUI(u);
@@ -29,6 +31,14 @@ socket.on(IOEVENTS.USER_ONLINE, users => {
     });
     
 });
+
+socket.on(IOEVENTS.RECEIVED, message => {
+    const isFromMe = socket.id === message.sender.id;
+
+    const newMessage = createMessageUI(message, isFromMe)
+    console.log(newMessage);
+    $('#chat-messages').append(newMessage);
+})
 
 
 function createMessageUI(message, isFromMe) {
@@ -38,7 +48,7 @@ function createMessageUI(message, isFromMe) {
         messageLi = 
             `<li class="chat-left">
                 <div class="chat-avatar">
-                <img src="${message.avatar}" alt="${message.name}">
+                <img src="${message.sender.avatar}" alt="${message.sender.name}">
                 <div class="chat-name">${message.name}</div>
                 </div>  
                 <div class="chat-text">${message.text}</div>
@@ -50,8 +60,8 @@ function createMessageUI(message, isFromMe) {
                 <div class="chat-hour">${dayjs(message.timestamp).format('HH:mm')} <span class="fa fa-check-circle"></span></div>
                 <div class="chat-text">${message.text}</div>
                 <div class="chat-avatar">
-                    <img src="${message.avatar}" alt="${message.name}">
-                    <div class="chat-name">${message.name}</div>
+                    <img src="${message.sender.avatar}" alt="${message.sender.name}">
+                    <div class="chat-name">${message.sender.name}</div>
                 </div>
             </li>`
     }
@@ -74,6 +84,12 @@ function createUserUI(user){
     
     return userLi;
 
+}
+
+function sendMessage() {
+    const message = $('#txtMessage').val();
+    $('#txtMessage').val("");
+    socket.emit(IOEVENTS.SEND, message);
 }
 
 

@@ -25,12 +25,36 @@ socketServer.on(IOEVENTS.CONNECTION, async (socket) => {
     console.log(socket.id);
 
     await newUser(socket);
+
+    socket.on(IOEVENTS.SEND, async (message) => {
+        const messageToBroadcast = {
+            text:message,
+            sender:socket.data.identity,
+            timestamp: dayjs()
+        }
+        socketServer.emit(IOEVENTS.RECEIVED, messageToBroadcast)
+    })
+
+    socket.on(IOEVENTS.UPDATE_USERNAME, async (newUsername) => {
+        socket.data.identity.name = newUsername
+        sendUserIdentities()
+    })
+
+    socket.on(IOEVENTS.UPDATE_USERNAME, async (newUsername) => {
+        socket.data.identity.name = newUsername
+        socketServer.emit(IOEVENTS.UPDATED_USERNAME, socket.data.identity)
+    })
+
+    socket.on(IOEVENTS.DISCONNECT, reason => {
+        sendUserIdentities()
+    })
 })
 
 async function newUser(socket) {
     const newUser = {
         id:socket.id,
-        name:'Anonyme'
+        name:'Anonyme',
+        avatar: randomAvatarImage()
     }
 
     socket.data.identity = newUser
@@ -46,7 +70,6 @@ async function sendUserIdentities() {
     const users = sockets.map(s => s.data.identity);
     
     socketServer.emit(IOEVENTS.USER_ONLINE, users)
-
 }
 
 function randomAvatarImage() {
