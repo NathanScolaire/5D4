@@ -48,9 +48,10 @@ class AccountRepository {
         return Accounts.create(account);
     }
 
-    generateJWT(account) {
-        const accessToken = jwt.sign({ email: account.email }, process.env.JWT_TOKEN_SECRET, { expiresIn: process.env.JWT_TOKEN_LIFE });
-        return { accessToken };
+    generateJWT(email) {
+        const accessToken = jwt.sign({ email }, process.env.JWT_TOKEN_SECRET, { expiresIn: process.env.JWT_TOKEN_LIFE });
+        const refreshToken = jwt.sign({ email }, process.env.JWT_REFRESH_SECRET, { expiresIn: process.env.JWT_REFRESH_LIFE });
+        return { accessToken, refreshToken };
     }
 
     async validateRefreshToken(email, refreshToken) {

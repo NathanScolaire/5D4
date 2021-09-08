@@ -11,7 +11,7 @@ class AccountRoutes {
     constructor() {
         router.post('/', this.post);
         router.post('/login', this.login);
-        router.post('/refresh', this.refreshToken);
+        router.post('/refresh', jwtMiddlewares.guardRefreshJWT, this.refreshToken);
         router.get('/secure', jwtMiddlewares.guardAuthorizationJWT, this.secure);
         router.delete('/logout', this.logout);
     }
@@ -37,7 +37,7 @@ class AccountRoutes {
         const result = await accountRepository.login(username, password);
 
         if (result.account) {
-            const token = accountRepository.generateJWT(result.account);
+            const token = accountRepository.generateJWT(result.account.email);
             res.status(200).json(token);
         } else {
             return next(result.err);
@@ -45,7 +45,11 @@ class AccountRoutes {
     }
 
     async refreshToken(req, res, next) {
+        const email = req.refreshToken.email;
+        jwtMiddlewares.revokedRefreshedToken.push(req.body.refreshToken);
+        const tokens = accountRepository.generateJWT(email);
 
+        res.status(201).json(tokens);
     }
 
     async logout(req, res, next) {
