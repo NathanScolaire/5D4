@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import express from 'express';
 import httpErrors from 'http-errors';
+import jwtMiddlewares from '../middlewares/authorization.jwt.js';
 
 import accountRepository from '../repositories/account.repository.js';
 
@@ -11,7 +12,7 @@ class AccountRoutes {
         router.post('/', this.post);
         router.post('/login', this.login);
         router.post('/refresh', this.refreshToken);
-        router.get('/secure', this.secure);
+        router.get('/secure', jwtMiddlewares.guardAuthorizationJWT, this.secure);
         router.delete('/logout', this.logout);
     }
 
@@ -28,7 +29,7 @@ class AccountRoutes {
     }
 
     secure(req, res, next) {
-
+        res.status(200).json(req.user);
     }
 
     async login(req, res, next) {
@@ -36,7 +37,8 @@ class AccountRoutes {
         const result = await accountRepository.login(username, password);
 
         if (result.account) {
-            res.status(200).end();
+            const token = accountRepository.generateJWT(result.account);
+            res.status(200).json(token);
         } else {
             return next(result.err);
         }
