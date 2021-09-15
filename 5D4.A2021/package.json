@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@graphql-tools/graphql-file-loader": "^7.1.0",
+    "@graphql-tools/load": "^7.3.0",
+    "@graphql-tools/schema": "^8.2.0",
+    "express-graphql": "^0.12.0"
+  }
+}
