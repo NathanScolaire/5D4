@@ -5,7 +5,10 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Todo.vue') },
-      { path: '/index', component: () => import('pages/Index.vue') }
+      { path: '/index', component: () => import('pages/Index.vue') },
+      { path: '/help', component: () => import('pages/Help.vue') },
+      { path: '/planets', component: () => import('pages/Planets.vue') },
+      { name: 'detailPlanet', path: '/detail-planet', component: () => import('pages/DetailPlanet.vue') }
     ]
   },
 

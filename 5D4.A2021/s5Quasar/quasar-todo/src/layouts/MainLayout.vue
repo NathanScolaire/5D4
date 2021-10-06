@@ -31,7 +31,16 @@
       :width="200"
       :breakpoint="600"
     >
-
+      <q-img class="absolute-top" src="~assets/forest.jpg" style="height:192px">
+        <div class="absolute-bottom bg-transparent">
+          <q-avatar size="56px" class="q-mb-sm">
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" alt="">
+          </q-avatar>
+            <div class="text-weigth-bold">Nathan Ethier</div>
+            <div>@NEthier</div>
+        </div>
+      </q-img>
+      
       <q-scroll-area style="height: calc(100% - 192px); margin-top: 192px; border-right: 1px solid #ddd">
           <q-list padding>
             <q-item
@@ -43,20 +52,36 @@
                 <q-icon name="list" />
               </q-item-section>
               <q-item-section>
-                Tâches
+                {{$t('task')}}
+              </q-item-section>
+            </q-item>
+            <q-item
+              to="/help"
+              exact
+              clickable
+              v-ripple>
+              <q-item-section avatar>
+                <q-icon name="help" />
+              </q-item-section>
+              <q-item-section>
+                Aide
+              </q-item-section>
+            </q-item>
+            <q-item
+              to="/planets"
+              exact
+              clickable
+              v-ripple>
+              <q-item-section avatar>
+                <q-icon name="travel_explore" />
+              </q-item-section>
+              <q-item-section>
+                Planètes
               </q-item-section>
             </q-item>
           </q-list>
       </q-scroll-area>
-      <q-img class="absolute-top" src="~assets/forest.jpg" style="height:192px">
-        <div class="absolute-bottom bg-transparent">
-          <q-avatar size="56px" class="q-mb-sm">
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" alt="">
-          </q-avatar>
-            <div class="text-weigth-bold">Nathan Ethier</div>
-            <div>@NEthier</div>
-        </div>
-      </q-img>
+      
     </q-drawer>
 
     <q-page-container>
